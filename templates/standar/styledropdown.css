@@ -1,0 +1,45 @@
+/*Menu Horizontal */
+#menu{
+	position	: relative;
+	width		: 100%;
+	height		: 40px;
+	background	: #6699CC;
+	border		: 1px solid #000000;
+}
+#menu ul{
+	padding	: 0;
+	margin	:0;
+	list-style: none;
+}
+#menu ul li{
+	float : left;
+	position : relative;
+}
+#menu ul li a{
+	float : left;
+	color : #FFFFFF;
+	padding : 10px;
+	border-right : 1px solid #000000;
+	text-decoration : none;
+	display : block;
+}
+/* menu dropdown */
+#menu ul li ul {
+	display : none;
+#menu ul li:hover ul {
+	display : block;
+	position : absolute;
+	top : 41 PX;
+	left : 0;
+}
+#menu ul li:hover ul li a {
+	display : block;
+	background : #6699CC;
+	color	: #ffffff;
+	width : 130px;
+	border-left : 1px solid #000000;
+}
+#menu ul li:hover ul li a:hover {
+	background : #000000;
+	color	   : #ffffff;
+} 

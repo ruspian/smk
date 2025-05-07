@@ -1,0 +1,56 @@
+ <?php
+session_start();
+include "../config/koneksi.php";
+
+// Generate CSRF Token
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+function anti_injection($conn, $data)
+{
+    return mysqli_real_escape_string($conn, stripslashes(strip_tags(htmlspecialchars($data, ENT_QUOTES))));
+}
+
+$error = "";
+
+// Proses login
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (!isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['csrf_token'])) {
+        $error = "Data tidak lengkap!";
+    } else {
+        $username = anti_injection($conn, $_POST['username']);
+        $password = $_POST['password'];
+        $csrf_token = $_POST['csrf_token'];
+
+        // Validasi CSRF Token
+        if (!isset($_SESSION['csrf_token']) || $csrf_token !== $_SESSION['csrf_token']) {
+            $error = "CSRF Token tidak valid!";
+        } else {
+            $query = $conn->prepare("SELECT * FROM users WHERE username = ? AND blokir = 'N'");
+            $query->bind_param("s", $username);
+            $query->execute();
+            $result = $query->get_result();
+            $user = $result->fetch_assoc();
+
+            // Verifikasi password
+            if ($user && password_verify($password, $user['password'])) {
+                $_SESSION['namauser'] = $user['username'];
+                $_SESSION['namalengkap'] = $user['nama_lengkap'];
+                $_SESSION['leveluser'] = $user['level'];
+
+                $sid = session_id();
+                $update = $conn->prepare("UPDATE users SET id_session = ? WHERE username = ?");
+                $update->bind_param("ss", $sid, $username);
+                $update->execute();
+
+                // Redirect ke halaman dashboard
+                header("Location: media.php?module=home");
+                exit();
+            } else {
+                $error = "Username atau password salah!";
+            }
+        }
+    }
+}
+?> -->

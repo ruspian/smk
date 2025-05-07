@@ -1,0 +1,27 @@
+<?xml version="1.0"?> 
+<rss version="2.0"> 
+<channel> 
+<title>Bahrin.com Feed</title>
+<link>http://bahrin..com</link>
+<description>Feed Description</description> 
+<language>en-us</language><item>
+                 <title>Thread di Delphi 7.0</title>
+                 <link>http://bahrin.com/berita-96-thread-delphi.html</link>
+                 <description>Thread adalah sebuah class. Untuk membuat Thread, bisa lewat Delphi sendiri ataupun menggunakan komponen. Pada kesempatan ini thread dibuat lewat Delphi. Untuk membuat Thread di Delphi 2007, File/New/Others, di Delphi ...</description>
+                 </item><item>
+                 <title>Ubuntu di Java, Oracle  Java 7</title>
+                 <link>http://bahrin.com/berita-95-ubuntu-java.html</link>
+                 <description>Beberapa hari yang lalu, saya sudah menulis artikel mengenai bagaimana menginstal Sun Java 6 di Ubuntu via PPA. Pada artikel tersebut paket aplikasi Sun Java diunduh dari Launchpad PPA, namun Oracle Java 7 tidak bisa ...</description>
+                 </item><item>
+                 <title>Multitasking di Delphi 7.0</title>
+                 <link>http://bahrin.com/berita-94-multitasking-delphi7.html</link>
+                 <description>Windows, Linux, dan sistem operasi yang sekarang berkembang sudah mendukung multi-tasking misalnya Kita bisa mendengarkan musik (WinAmp) sambil ngetik (MS Word). Sementara itu &ldquo;tanpa kita sadari&rdquo;, program ...</description>
+                 </item><item>
+                 <title>Dalam Dua Pekan, KCB 2 Ditonton 1,5 Juta Penonton</title>
+                 <link>http://bahrin.com/berita-93-dalam-dua-pekan-kcb-2-ditonton-15-juta-penonton.html</link>
+                 <description>Film Ketika Cinta Bertasbih (KCB) 2 diyakini bakal mereguk sukses seperti sekuel pertamanya Sejak diputar perdana tanggal 17 September lalu atau selama 15 hari, film garapan SinemArt telah disaksikan 1,5 juta ...</description>
+                 </item><item>
+                 <title>Pemilik Facebook akan Dibuat Filmnya</title>
+                 <link>http://bahrin.com/berita-92-pemilik-facebook-akan-dibuat-filmnya.html</link>
+                 <description>Sutradara David Fincher nampak jeli melihat peluang di tengah booming fenomena Facebook. Fincher akan menghadirkan sebuah film yang menceritakan tentang Mark Zuckerberg dan Facebook bagi para pencinta film dan Facebook ...</description>
+                 </item></channel></rss>
