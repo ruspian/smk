@@ -1,6 +1,8 @@
 <?php
 $aksi = "modul/mod_galerifoto/aksi_galerifoto.php";
-switch ($aksi) {
+$act = $_GET['act'] ?? '';
+
+switch ($act) {
   // Tampil Galeri Foto
   default:
     echo "<div class='container'>
@@ -66,4 +68,51 @@ switch ($aksi) {
             </form>
           </div>";
     break;
+
+    case "editgalerifoto":
+      $id = intval($_GET['id']);
+      $edit = mysqli_query($conn, "SELECT * FROM gallery WHERE id_gallery = $id");
+      $r = mysqli_fetch_array($edit);
+    
+      echo "<div class='container'>
+              <h2 class='my-4'>Edit Galeri Foto</h2>
+              <form method='POST' action='$aksi?module=galerifoto&act=update' enctype='multipart/form-data'>
+                <input type='hidden' name='id' value='$r[id_gallery]'>
+    
+                <div class='mb-3'>
+                  <label class='form-label'>Judul Foto</label>
+                  <input type='text' name='jdl_gallery' class='form-control' value='$r[jdl_gallery]'>
+                </div>
+    
+                <div class='mb-3'>
+                  <label class='form-label'>Album</label>
+                  <select name='album' class='form-select'>";
+                  
+      $album = mysqli_query($conn, "SELECT * FROM album ORDER BY jdl_album");
+      while ($a = mysqli_fetch_array($album)) {
+        $selected = ($a['id_album'] == $r['id_album']) ? 'selected' : '';
+        echo "<option value='$a[id_album]' $selected>$a[jdl_album]</option>";
+      }
+    
+      echo "    </select>
+                </div>
+    
+                <div class='mb-3'>
+                  <label class='form-label'>Keterangan</label>
+                  <textarea name='keterangan' class='form-control' rows='3'>$r[keterangan]</textarea>
+                </div>
+    
+                <div class='mb-3'>
+                  <label class='form-label'>Gambar Saat Ini</label><br>
+                  <img src='../foto_galeri/$r[gbr_gallery]' width='150'><br><br>
+                  <input type='file' name='fupload' class='form-control'>
+                  <small class='text-muted'>Biarkan kosong jika tidak ingin mengganti gambar</small>
+                </div>
+    
+                <button type='submit' class='btn btn-success'>Update</button>
+                <a href='?module=galerifoto' class='btn btn-secondary'>Batal</a>
+              </form>
+            </div>";
+      break;
+    
 }

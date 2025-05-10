@@ -5,45 +5,49 @@ include "../../../config/library.php";
 include "../../../config/fungsi_thumb.php";
 
 // Cek apakah module dan act ada
-$module = isset($_GET['module']) ? $_GET['module'] : '';
-$act = isset($_GET['act']) ? $_GET['act'] : '';
+$module = $_GET['module'] ?? '';
+$act = $_GET['act'] ?? '';
+
+// Daftar ekstensi file yang diperbolehkan
+$allowed_extensions = ['pdf', 'doc', 'docx', 'docx', 'zip', 'rar', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'jpg', 'jpeg', 'png', 'gif', 'mp3', 'mp4', 'avi', 'mkv', 'mov', 'wmv', 'flv', 'webm'];
 
 // Hapus download
 if ($module == 'download' && $act == 'hapus') {
-    $id = intval($_GET['id']); // Pastikan ID adalah angka
-    $query = mysqli_query($conn, "DELETE FROM download WHERE id_download='$id'");
-
-    if ($query) {
-        header('Location: ../../media.php?module=' . $module);
-    } else {
-        echo "Gagal menghapus data.";
+    $id = intval($_GET['id']);
+    // Ambil nama file untuk dihapus
+    $data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT nama_file FROM download WHERE id_download='$id'"));
+    if (!empty($data['nama_file']) && file_exists("../../../files/" . $data['nama_file'])) {
+        unlink("../../../files/" . $data['nama_file']);
     }
+    $query = mysqli_query($conn, "DELETE FROM download WHERE id_download='$id'");
+    header('Location: ../../media.php?module=' . $module);
 }
 
 // Input download
 elseif ($module == 'download' && $act == 'input') {
     $judul = mysqli_real_escape_string($conn, $_POST['judul']);
-    $tgl_posting = date('Y-m-d'); // Pastikan tanggal diambil dari sistem
-
-    $lokasi_file = $_FILES['fupload']['tmp_name'];
+    $tgl_posting = date('Y-m-d');
     $nama_file = $_FILES['fupload']['name'];
-    $tipe_file = pathinfo($nama_file, PATHINFO_EXTENSION);
-    $allowed_extensions = ['pdf', 'doc', 'docx', 'zip', 'rar'];
+    $tmp_file = $_FILES['fupload']['tmp_name'];
+    $tipe_file = strtolower(pathinfo($nama_file, PATHINFO_EXTENSION));
 
-    // Cek apakah file memiliki ekstensi yang diperbolehkan
-    if (!empty($lokasi_file) && in_array($tipe_file, $allowed_extensions)) {
+    $hits = 0; // Default hits
+
+    if (!empty($tmp_file) && in_array($tipe_file, $allowed_extensions)) {
         UploadFile($nama_file);
-        $query = "INSERT INTO download(judul, nama_file, tgl_posting) 
-                  VALUES('$judul', '$nama_file', '$tgl_posting')";
+        // Tidak perlu menyertakan id_download karena akan otomatis terisi
+        $query = "INSERT INTO download(judul, nama_file, tgl_posting, hits) 
+                  VALUES('$judul', '$nama_file', '$tgl_posting', '$hits')";
     } else {
-        $query = "INSERT INTO download(judul, tgl_posting) 
-                  VALUES('$judul', '$tgl_posting')";
+        // Jika tidak ada file, tetap set hits ke 0
+        $query = "INSERT INTO download(judul, tgl_posting, hits) 
+                  VALUES('$judul', '$tgl_posting', '$hits')";
     }
 
     if (mysqli_query($conn, $query)) {
         header('Location: ../../media.php?module=' . $module);
     } else {
-        echo "Gagal menyimpan data.";
+        echo "Gagal menyimpan data: " . mysqli_error($conn);
     }
 }
 
@@ -51,24 +55,33 @@ elseif ($module == 'download' && $act == 'input') {
 elseif ($module == 'download' && $act == 'update') {
     $id = intval($_POST['id']);
     $judul = mysqli_real_escape_string($conn, $_POST['judul']);
-
-    $lokasi_file = $_FILES['fupload']['tmp_name'];
     $nama_file = $_FILES['fupload']['name'];
-    $tipe_file = pathinfo($nama_file, PATHINFO_EXTENSION);
-    $allowed_extensions = ['pdf', 'doc', 'docx', 'zip', 'rar'];
+    $tmp_file = $_FILES['fupload']['tmp_name'];
+    $tipe_file = strtolower(pathinfo($nama_file, PATHINFO_EXTENSION));
 
-    // Jika file diunggah dan memiliki ekstensi yang diperbolehkan
-    if (!empty($lokasi_file) && in_array($tipe_file, $allowed_extensions)) {
+    // Set default hits
+    $hits = 0;
+
+    if (!empty($tmp_file) && in_array($tipe_file, $allowed_extensions)) {
+        // Hapus file lama
+        $data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT nama_file FROM download WHERE id_download='$id'"));
+        if (!empty($data['nama_file']) && file_exists("../../../files/" . $data['nama_file'])) {
+            unlink("../../../files/" . $data['nama_file']);
+        }
+
+        // Upload file baru
         UploadFile($nama_file);
-        $query = "UPDATE download SET judul='$judul', nama_file='$nama_file' WHERE id_download='$id'";
+        // Tidak perlu menyertakan id_download pada query update, karena id sudah diidentifikasi
+        $query = "UPDATE download SET judul='$judul', nama_file='$nama_file', tgl_posting=NOW(), hits='$hits' WHERE id_download='$id'";
     } else {
-        $query = "UPDATE download SET judul='$judul' WHERE id_download='$id'";
+        // Jika tidak ada file baru, tetap update hits
+        $query = "UPDATE download SET judul='$judul', hits='$hits' WHERE id_download='$id'";
     }
 
     if (mysqli_query($conn, $query)) {
         header('Location: ../../media.php?module=' . $module);
     } else {
-        echo "Gagal memperbarui data.";
+        echo "Gagal memperbarui data: " . mysqli_error($conn);
     }
 }
 ?>

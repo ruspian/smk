@@ -1,6 +1,8 @@
 <?php
 $aksi = "modul/mod_komentar/aksi_komentar.php";
-switch ($aksi) {
+$act = isset($_GET['act']) ? $_GET['act'] : '';
+
+switch ($act) {
   default:
     echo "<div class='container mt-4'>
             <h2>Komentar</h2>
@@ -30,7 +32,8 @@ switch ($aksi) {
               <td class='text-center'>$r[aktif]</td>
               <td>
                 <a href='?module=komentar&act=editkomentar&id=$r[id_komentar]' class='btn btn-warning btn-sm'>Edit</a>
-                <a href='$aksi?module=komentar&act=hapus&id=$r[id_komentar]' class='btn btn-danger btn-sm mt-2' onclick='return confirm('Apakah Anda yakin ingin menghapus?');'>Hapus</a>
+                <a href='$aksi?module=komentar&act=hapus&id=$r[id_komentar]' class='btn btn-danger btn-sm mt-2' onclick=\"return confirm('Apakah Anda yakin ingin menghapus?');\">Hapus</a>
+
               </td>
             </tr>";
       $no++;

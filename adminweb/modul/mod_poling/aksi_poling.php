@@ -37,15 +37,22 @@ elseif ($module === 'poling' && $act === 'input') {
 
     $pilihan = clean_input($_POST['pilihan']);
     $aktif = ($_POST['aktif'] === 'Y') ? 'Y' : 'N';
+    $rating = 0; // Default rating value
 
-    $stmt = $conn->prepare("INSERT INTO poling (pilihan, aktif) VALUES (?, ?)");
-    $stmt->bind_param("ss", $pilihan, $aktif);
+    // Debugging: Cek nilai pilihan, aktif, dan rating
+    echo "Pilihan: " . $pilihan . "<br>";
+    echo "Aktif: " . $aktif . "<br>";
+    echo "Rating: " . $rating . "<br>";
+
+    $stmt = $conn->prepare("INSERT INTO poling (pilihan, rating, aktif) VALUES (?, ?, ?)");
+    $stmt->bind_param("sis", $pilihan, $rating, $aktif);
 
     if ($stmt->execute()) {
         header('Location: ../../media.php?module=' . $module);
         exit();
     } else {
-        die("Gagal menambahkan data!");
+        // Debugging: Tampilkan error
+        die("Gagal menambahkan data! Error: " . $stmt->error);
     }
 }
 
@@ -58,15 +65,16 @@ elseif ($module === 'poling' && $act === 'update') {
     $id = intval($_POST['id']);
     $pilihan = clean_input($_POST['pilihan']);
     $aktif = ($_POST['aktif'] === 'Y') ? 'Y' : 'N';
+    $rating = 0; // Default rating value
 
-    $stmt = $conn->prepare("UPDATE poling SET pilihan = ?, aktif = ? WHERE id_poling = ?");
-    $stmt->bind_param("ssi", $pilihan, $aktif, $id);
+    $stmt = $conn->prepare("UPDATE poling SET pilihan = ?, rating = ?, aktif = ? WHERE id_poling = ?");
+    $stmt->bind_param("sisi", $pilihan, $rating, $aktif, $id);
 
     if ($stmt->execute()) {
         header('Location: ../../media.php?module=' . $module);
         exit();
     } else {
-        die("Gagal mengupdate data!");
+        die("Gagal mengupdate data! Error: " . $stmt->error);
     }
 }
 ?>
